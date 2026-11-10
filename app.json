@@ -1,0 +1,75 @@
+{
+  "expo": {
+    "name": "Mandirpedia",
+    "slug": "mandirpedia",
+    "scheme": "mandirpedia",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#FFFFFF",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mandirpedia",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "package": "com.mandirpedia",
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 140,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF",
+          "dark": {
+            "image": "./assets/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          }
+        }
+      ],
+      "expo-font",
+      "expo-status-bar",
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "owner": "akcatalysts-team",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "dd3653c9-7ead-4e43-9244-3a49ff248190"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/dd3653c9-7ead-4e43-9244-3a49ff248190",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
+  }
+}
