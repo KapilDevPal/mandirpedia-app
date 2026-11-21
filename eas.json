@@ -21,12 +21,21 @@
       "ios": {
         "resourceClass": "default"
       },
-      "channel": "production"
+      "channel": "production",
+      "android": {
+        "credentialsSource": "local"
+      }
     }
   },
   "submit": {
     "production": {
-      "ios": {}
+      "ios": {
+        "ascAppId": "6833113190"
+      },
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
     }
   }
 }

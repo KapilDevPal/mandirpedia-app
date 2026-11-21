@@ -26,7 +26,7 @@ test('validation never mutates the dataset', () => {
 test('every recitation renders exactly the original text, complete and in order', () => {
   const { collection } = validateCollection(load());
   const recitations = collection.entries.filter((e) => isRecitationCategory(e.category));
-  assert.equal(recitations.length, 18);
+  assert.equal(recitations.length, 41);
   for (const e of recitations) {
     const r = getRecitation(e);
     assert.equal(r.kind, 'lines', `${e.id} should render its lines array`);
@@ -46,11 +46,15 @@ test('long chalisas are present in full (no truncation)', () => {
   }
 });
 
-test('repetition marks and parenthesised alternates are preserved', () => {
+test('repetitions are written out in full and parenthesised alternates are preserved', () => {
   const { collection } = validateCollection(load());
+  for (const e of collection.entries) {
+    const shown = recitationString(getRecitation(e)) ?? '';
+    assert.ok(!/\b[xX×]\s?2\b/.test(shown), `${e.id}: still contains an "x2" marker`);
+  }
   const ganesh = collection.entries.find((e) => e.id === 'ganesha-aarti')!;
   const shown = recitationString(getRecitation(ganesh))!;
-  assert.ok(shown.includes('x2'), 'x2 repetition marker missing');
+  assert.ok(shown.includes('माता जाकी पार्वती,पिता महादेवा॥\nमाता जाकी पार्वती,पिता महादेवा॥'), 'refrain should be repeated');
   assert.ok(shown.includes('('), 'parenthesised alternate missing');
 });
 
@@ -80,12 +84,12 @@ test('IDs are unique and all relationships resolve', () => {
 test('actual counts: deity profiles and ritual explanations are not counted as prayers', () => {
   const { collection } = validateCollection(load());
   const count = (c: string) => collection.entries.filter((e) => e.category === c).length;
-  assert.equal(count('aarti'), 6);
-  assert.equal(count('chalisa'), 6);
+  assert.equal(count('aarti'), 18);
+  assert.equal(count('chalisa'), 17);
   assert.equal(count('mantra'), 6);
   assert.equal(count('yantra'), 6);
-  assert.equal(collection.entries.length, 24);
-  assert.equal(collection.deities.length, 10);
+  assert.equal(collection.entries.length, 47);
+  assert.equal(collection.deities.length, 18);
   assert.equal(collection.ritual_explanations.length, 7);
 });
 
@@ -101,6 +105,7 @@ test('yantras are external references with no bundled diagram', () => {
 
 test('validator catches broken data', () => {
   const data = load();
+  const realCount = data.entries.length;
   data.entries.push({ ...data.entries[0] }); // duplicate id
   data.deities[0].related_entry_ids.push('no-such-entry');
   data.deities[0].source_ids.push('no-such-source');
@@ -111,7 +116,7 @@ test('validator catches broken data', () => {
   assert.match(msgs, /unknown entry "no-such-entry"/);
   assert.match(msgs, /unknown source "no-such-source"/);
   assert.match(msgs, /does not equal "text"/);
-  assert.equal(collection.entries.length, 24, 'duplicate should be skipped');
+  assert.equal(collection.entries.length, realCount, 'duplicate should be skipped');
 });
 
 test('validator degrades gracefully on missing optional fields', () => {

@@ -127,18 +127,6 @@ export default function SettingsScreen() {
       </AppText>
       <Button kind="secondary" icon="star-outline" label={t('rateApp')} onPress={openStoreReview} />
 
-      <SectionTitle>{t('aboutContent')}</SectionTitle>
-      <Card onPress={() => router.push('/sources')}>
-        <Row>
-          <View style={{ flex: 1 }}>
-            <AppText variant="subheading">{t('sourcesTitle')}</AppText>
-            <AppText variant="small" tone="muted">
-              {t('aboutContentNote')}
-            </AppText>
-          </View>
-          <IconButton icon="chevron-forward" label={t('sourcesTitle')} onPress={() => router.push('/sources')} />
-        </Row>
-      </Card>
       <Button kind="ghost" icon="heart-outline" label={t('favourites')} onPress={() => router.push('/favourites')} style={{ marginTop: spacing.md }} />
 
       <AppText variant="caption" tone="muted" center style={{ marginTop: spacing.xl }}>

@@ -13,15 +13,7 @@ import {
   type ScrollViewInstance,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  ChecksumStatus,
-  Collapsible,
-  ExternalLinkButton,
-  LabelledBlock,
-  LocalizedText,
-  RecitationBody,
-  VerificationList,
-} from '@/components/content';
+import { Collapsible, LocalizedText, RecitationBody } from '@/components/content';
 import { KeepAwake } from '@/components/KeepAwake';
 import { maybeRequestReview } from '@/services/review';
 import { AppText, Button, Chip, Column, EmptyState, IconButton, Ionicons, Notice, Row } from '@/components/ui';
@@ -33,9 +25,8 @@ import {
   entryTitle,
   getRecitation,
   isRecitationCategory,
-  recitationString,
 } from '@/content';
-import { formatDate, languageName, useT } from '@/i18n';
+import { languageName, useT } from '@/i18n';
 import { FONT_LIMITS, useStore, type ThemeSetting } from '@/state/store';
 import { fonts, radius, spacing, usePalette } from '@/theme';
 
@@ -80,7 +71,6 @@ function Reader({ entryId }: { entryId: string }) {
   }, [entryId, recordUse]);
 
   const recitation = useMemo(() => getRecitation(entry), [entry]);
-  const displayed = useMemo(() => recitationString(recitation), [recitation]);
   const title = entryTitle(entry, lang);
   const deityName = entryDeityName(entry, lang);
   const deityProfile = entry.deity_id ? deitiesById.get(entry.deity_id) : undefined;
@@ -245,7 +235,6 @@ function Reader({ entryId }: { entryId: string }) {
   };
 
   const pct = resumeOffer ? Math.round(resumeOffer.fraction * 100) : 0;
-  const notes = entry.notes?.trim();
   const barHeight = 64 + insets.bottom;
 
   return (
@@ -341,12 +330,6 @@ function Reader({ entryId }: { entryId: string }) {
             </Pressable>
           )}
 
-          {lang === 'en' && recitation.kind !== 'none' && (
-            <Notice icon="language-outline" style={{ marginTop: spacing.md }}>
-              {t('noTranslationNote')}
-            </Notice>
-          )}
-
           {/* Original recitation: plain panel, no decoration behind the text. */}
           <View
             onLayout={(e: LayoutChangeEvent) => (panelY.current = e.nativeEvent.layout.y)}
@@ -398,29 +381,6 @@ function Reader({ entryId }: { entryId: string }) {
                 <Notice>{t('traditionalBeliefNote')}</Notice>
               </Collapsible>
             )}
-            <Collapsible title={t('sourceAndVerification')} icon="document-text-outline">
-              {entry.source?.url && <ExternalLinkButton url={entry.source.url} label={t('sourceLink')} />}
-              <View style={{ gap: 2 }}>
-                {entry.source?.accessed_on && (
-                  <AppText variant="small" tone="muted">
-                    {t('accessedOn', { date: formatDate(entry.source.accessed_on, lang) })}
-                  </AppText>
-                )}
-                {entry.source?.source_line_start !== undefined && entry.source?.source_line_end !== undefined && (
-                  <AppText variant="small" tone="muted">
-                    {t('sourceLines', { start: entry.source.source_line_start, end: entry.source.source_line_end })}
-                  </AppText>
-                )}
-              </View>
-              <VerificationList verification={entry.verification} />
-              <ChecksumStatus displayed={displayed} expected={entry.text_sha256} />
-              {notes && (
-                <LabelledBlock label={lang === 'hi' ? t('editorNoteEnglishOnly') : t('editorNote')}>
-                  <AppText variant="small">{notes}</AppText>
-                </LabelledBlock>
-              )}
-              <Button kind="ghost" icon="shield-checkmark-outline" label={t('aboutContent')} onPress={() => router.push('/sources')} />
-            </Collapsible>
           </View>
         </Column>
       </ScrollView>

@@ -161,3 +161,17 @@ test('drawn yantra diagrams are internally consistent and reference real yantra 
   }
   assert.equal(isValidNumberSquare({ kind: 'number-square', rows: [[1, 2], [3, 4]], magicSum: 5, basis: {} }), false);
 });
+
+test('every yantra entry has artwork with a bilingual note and centred labels', async () => {
+  const { yantraArt } = await import('../src/content/yantraArt.ts');
+  const yantraIds = entries.filter((e) => e.category === 'yantra').map((e) => e.id);
+  for (const id of yantraIds) {
+    const art = yantraArt[id];
+    assert.ok(art, `${id}: no artwork`);
+    assert.ok(art.svg.startsWith('<svg') && art.svg.endsWith('</svg>'), `${id}: malformed SVG`);
+    assert.ok(art.basis.en && art.basis.hi, `${id}: needs a bilingual note`);
+    assert.ok(art.labels.length > 0, `${id}: needs a bija mantra or numerals`);
+    for (const l of art.labels) assert.ok(l.x > 0 && l.x < 200 && l.y > 0 && l.y < 200, `${id}: label outside the artwork`);
+  }
+  for (const id of Object.keys(yantraArt)) assert.ok(yantraIds.includes(id), `artwork for unknown yantra ${id}`);
+});

@@ -162,8 +162,11 @@ export const emblems: Record<string, Shape[]> = {
   ],
 };
 
-/** App mark: a temple (mandir) with shikhara, amalaka, kalasha and flag. Filled silhouette for icon legibility. */
-export const templeMark: Shape[] = [
+/** The temple's dhwaja (pennant). Kept separate so icons can colour it saffron. */
+export const templeFlag: Shape[] = [{ k: 'path', d: 'M50 2.5 L70 9.5 L50 16.5 Z', fill: 'fg', sw: 0 }];
+
+/** Temple without the pennant: shikhara, amalaka, kalasha and flagpole. */
+export const templeBody: Shape[] = [
   { k: 'rect', x: 18, y: 84, w: 64, h: 5, fill: 'fg', sw: 0 },
   { k: 'rect', x: 23, y: 79, w: 54, h: 5, fill: 'fg', sw: 0 },
   { k: 'rect', x: 31, y: 58, w: 38, h: 21, fill: 'fg', sw: 0 },
@@ -174,9 +177,11 @@ export const templeMark: Shape[] = [
   { k: 'rect', x: 41, y: 36.5, w: 18, h: 1.8, fill: 'bg', sw: 0 },
   { k: 'ellipse', cx: 50, cy: 22.5, rx: 6.5, ry: 2.6, fill: 'fg', sw: 0 },
   { k: 'path', d: 'M46.5 20 C46.5 15.5 53.5 15.5 53.5 20 Z', fill: 'fg', sw: 0 },
-  { k: 'line', x1: 50, y1: 16, x2: 50, y2: 5, sw: 1.4 },
-  { k: 'path', d: 'M50 5 L61 8.5 L50 12 Z', fill: 'fg', sw: 0 },
+  { k: 'line', x1: 50, y1: 17, x2: 50, y2: 2.5, sw: 1.8 },
 ];
+
+/** App mark: a temple (mandir) with shikhara, amalaka, kalasha and flag. Filled silhouette for icon legibility. */
+export const templeMark: Shape[] = [...templeBody, ...templeFlag];
 
 /** SVG elements only (no <svg> wrapper), for composing into masks or larger documents. */
 export function shapesToSvgBody(shapes: Shape[], opts: { fg: string; bg: string; sw?: number }): string {

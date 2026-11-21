@@ -1,19 +1,19 @@
 import { Redirect, router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { NumberSquare } from '@/components/YantraDiagram';
-import { yantraArtwork, yantraDiagrams } from '@/content/yantraDiagrams';
-import { Collapsible, ExternalLinkButton, LabelledBlock, LocalizedText, VerificationList } from '@/components/content';
+import { Image, View } from 'react-native';
+import { LabelledBlock, LocalizedText } from '@/components/content';
 import { AppText, Button, Chip, EmptyState, IconButton, Ionicons, Notice, Row, Screen } from '@/components/ui';
+import { YantraArt } from '@/components/YantraArt';
 import { deitiesById, entriesById, entryDeityName, entryTitle, isRecitationCategory, loc } from '@/content';
-import { formatDate, useT } from '@/i18n';
+import { yantraArt } from '@/content/yantraArt';
+import { yantraArtwork, yantraDiagrams } from '@/content/yantraDiagrams';
+import { useT } from '@/i18n';
 import { useStore } from '@/state/store';
 import { spacing, usePalette } from '@/theme';
 
 /**
- * Yantra screen. Shows a licensed bundled image if present, else a diagram drawn from
- * src/content/yantraDiagrams.ts (only for forms that are unambiguous and widely published),
- * else a clear statement plus the source link. No diagram is ever guessed.
+ * Yantra screen: a licensed bundled image if one exists, else the app's own drawing
+ * (src/content/yantraArt.ts), then what the yantra is and why devotees use it.
  */
 export default function YantraScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -36,9 +36,11 @@ export default function YantraScreen() {
   const title = entryTitle(entry, lang);
   const deityProfile = entry.deity_id ? deitiesById.get(entry.deity_id) : undefined;
   const deityName = entryDeityName(entry, lang);
-  const notes = entry.notes?.trim();
   const artwork = yantraArtwork[entry.id];
-  const diagram = yantraDiagrams[entry.id];
+  const art = yantraArt[entry.id];
+  const square = yantraDiagrams[entry.id];
+  const basis = loc(art?.basis, lang);
+  const a11y = square ? `${title}. ${t('yantraDiagramA11y', { sum: square.magicSum })}` : `${title}. ${basis ?? ''}`;
 
   return (
     <Screen>
@@ -65,42 +67,29 @@ export default function YantraScreen() {
         </Row>
       )}
 
-      {/* Licensed image, then an accurately drawn diagram, else a clear statement. Nothing is guessed. */}
-      <View style={{ marginTop: spacing.xl }}>
+      <View style={{ marginTop: spacing.xl, width: '100%', maxWidth: 440, alignSelf: 'center' }}>
         {artwork ? (
           <View style={{ gap: spacing.sm }}>
-            <View style={{ width: '100%', maxWidth: 420, aspectRatio: 1, alignSelf: 'center', borderWidth: 1, borderColor: p.border, backgroundColor: '#FFFFFF' }}>
+            <View style={{ width: '100%', aspectRatio: 1, borderWidth: 1, borderColor: p.border, backgroundColor: '#FFFFFF' }}>
               <Image source={artwork.source} resizeMode="contain" style={{ width: '100%', height: '100%' }} accessibilityLabel={title} />
             </View>
             <AppText variant="caption" tone="muted">
               {`${artwork.credit}. ${artwork.licence}`}
             </AppText>
           </View>
-        ) : diagram ? (
-          <View style={{ gap: spacing.md }}>
-            <View style={{ width: '100%', maxWidth: 420, aspectRatio: 1, alignSelf: 'center' }} accessibilityLabel={`${title}. ${t('yantraDiagramA11y', { sum: diagram.magicSum })}`}>
-              <NumberSquare diagram={diagram} fg={p.text} bg={p.background} devanagari={lang === 'hi'} />
-            </View>
-            <Notice icon="information-circle-outline">{loc(diagram.basis, lang) ?? ''}</Notice>
-          </View>
+        ) : art ? (
+          <YantraArt id={entry.id} devanagariDigits={lang === 'hi'} accessibilityLabel={a11y} />
         ) : (
-          <View style={{ borderWidth: 1, borderStyle: 'dashed', borderColor: p.border, padding: spacing.xl, alignItems: 'center', gap: spacing.sm }}>
+          <View style={{ aspectRatio: 1, borderWidth: 1, borderColor: p.border, alignItems: 'center', justifyContent: 'center' }}>
             <Ionicons name="grid-outline" size={36} color={p.textMuted} />
-            <AppText variant="subheading" center>
-              {t('diagramUnavailableTitle')}
-            </AppText>
-            <AppText variant="small" tone="muted" center>
-              {t('diagramUnavailableBody')}
-            </AppText>
           </View>
         )}
+        {!artwork && basis && (
+          <AppText variant="caption" tone="muted" style={{ marginTop: spacing.sm }}>
+            {basis}
+          </AppText>
+        )}
       </View>
-
-      {entry.source?.url && (
-        <View style={{ marginTop: spacing.lg }}>
-          <ExternalLinkButton url={entry.source.url} primary />
-        </View>
-      )}
 
       <View style={{ marginTop: spacing.xl, gap: spacing.lg }}>
         {entry.summary && (
@@ -114,29 +103,9 @@ export default function YantraScreen() {
             <Notice style={{ marginTop: spacing.sm }}>{t('traditionalBeliefNote')}</Notice>
           </LabelledBlock>
         )}
-        {entry.explanation_note && (
-          <AppText variant="caption" tone="muted">
-            {loc(entry.explanation_note, lang)}
-          </AppText>
-        )}
       </View>
 
-      <View style={{ marginTop: spacing.xl, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: p.border }}>
-        <Collapsible title={t('sourceAndVerification')} icon="document-text-outline">
-          {entry.source?.accessed_on && (
-            <AppText variant="small" tone="muted">
-              {t('accessedOn', { date: formatDate(entry.source.accessed_on, lang) })}
-            </AppText>
-          )}
-          <VerificationList verification={entry.verification} />
-          {notes && (
-            <LabelledBlock label={lang === 'hi' ? t('editorNoteEnglishOnly') : t('editorNote')}>
-              <AppText variant="small">{notes}</AppText>
-            </LabelledBlock>
-          )}
-          <Button kind="ghost" icon="shield-checkmark-outline" label={t('aboutContent')} onPress={() => router.push('/sources')} />
-        </Collapsible>
-      </View>
+      <Button kind="secondary" icon="school-outline" label={t('learnPuja')} onPress={() => router.navigate('/learn')} style={{ marginTop: spacing.xl }} />
     </Screen>
   );
 }

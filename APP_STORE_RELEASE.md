@@ -98,6 +98,8 @@ npx eas-cli@latest update --channel production --message "Add Saraswati Chalisa"
 
 ## 6. Android (Google Play)
 
+> The full Google Play guide (account, every Play Console form, data safety, listing text and assets) is in [PLAY_STORE_RELEASE.md](PLAY_STORE_RELEASE.md). The summary below is kept for reference.
+
 ```bash
 npx eas-cli@latest build --platform android --profile production   # produces an .aab
 ```
@@ -158,7 +160,6 @@ JAP COUNTER
 LEARN
 • Who each deity is, why devotees worship them, common occasions and offerings
 • Short introductions to aarti, japa, prasad, flower offerings, abhisheka and yantras
-• Every explanation lists its sources
 
 DESIGNED FOR DEVOTION
 • Works fully offline once installed
@@ -177,7 +178,7 @@ Explanations describe traditional beliefs; customs vary by family, region and tr
 • स्पष्ट देवनागरी, अक्षर का आकार बदलने की सुविधा, हल्की और गहरी पठन थीम
 • बुकमार्क और "पढ़ना जारी रखें"
 • 11, 21, 108 या अपने लक्ष्य के साथ जप गणक
-• देवताओं और पूजा-पद्धतियों का स्रोत-सहित परिचय
+• देवताओं, यन्त्रों और पूजा-पद्धतियों का सरल परिचय
 • पूरी तरह ऑफ़लाइन, कोई खाता या विज्ञापन नहीं; सब कुछ आपके फ़ोन पर ही रहता है
 
 व्याख्याएँ परम्परागत आस्था का वर्णन हैं; रीति-रिवाज़ परिवार, क्षेत्र और परम्परा के अनुसार बदलते हैं।

@@ -23,7 +23,11 @@ export default function JapScreen() {
   const selectedId = useStore((s) => s.jap.selectedMantraId);
   const counters = useStore((s) => s.jap.counters);
   const { selectMantra, japIncrement, japDecrement, japReset, japSetTarget, recordUse } = useStore.getState();
-  useFocusEffect(useCallback(() => recordUse('feature:jap'), [recordUse]));
+  useFocusEffect(
+    useCallback(() => {
+      recordUse('feature:jap');
+    }, [recordUse]),
+  );
 
   const mantra = mantras.find((m) => m.id === selectedId) ?? mantras[0];
   const counter = (mantra && counters[mantra.id]) || newCounter(DEFAULT_TARGET);

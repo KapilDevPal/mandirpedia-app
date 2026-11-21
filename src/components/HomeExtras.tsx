@@ -9,6 +9,7 @@ import { topUsage } from '@/state/usage';
 import { spacing, TOUCH, usePalette } from '@/theme';
 import { iconForCategory } from './content';
 import { Emblem } from './Emblem';
+import { EmblemArt, hasEmblemArt } from './EmblemArt';
 import { AppText, Button, Ionicons, Row, SectionTitle, type IconName } from './ui';
 
 /** Resolves a usage key to something displayable, or null if the content no longer exists. */
@@ -20,7 +21,7 @@ function describe(key: string, lang: 'hi' | 'en', t: (k: 'feature_jap' | 'featur
   }
   if (kind === 'deity') {
     if (!deitiesById.has(id) && !deityIdsWithEntries.includes(id)) return null;
-    return { label: deityLabel(id, lang), sub: undefined, icon: 'person-circle-outline' as IconName, emblem: emblems[id], go: () => router.push(`/deity/${id}`) };
+    return { label: deityLabel(id, lang), sub: undefined, icon: 'person-circle-outline' as IconName, emblem: emblems[id], deityId: id, go: () => router.push(`/deity/${id}`) };
   }
   if (kind === 'category') {
     if (!categories.includes(id)) return null;
@@ -68,7 +69,11 @@ export function MostUsed() {
             })}
           >
             <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              {d.emblem ? (
+              {'deityId' in d && d.deityId && hasEmblemArt(d.deityId) ? (
+                <View style={{ width: 36, height: 36 }}>
+                  <EmblemArt deityId={d.deityId} />
+                </View>
+              ) : d.emblem ? (
                 <View style={{ width: 32, height: 32 }}>
                   <Emblem shapes={d.emblem} fg={p.text} bg={p.surface} strokeWidth={3} />
                 </View>

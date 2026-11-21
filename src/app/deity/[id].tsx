@@ -2,16 +2,16 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { artworkCredit, DeityArt } from '@/components/DeityArt';
-import { EntryRow, LabelledBlock, LocalizedText, SourceList } from '@/components/content';
-import { AppText, Button, Card, Column, Divider, EmptyState, Notice, Screen, SectionTitle } from '@/components/ui';
-import { collection, deitiesById, deityLabel, deityIdsWithEntries, entries, loc, relatedEntries, sourcesFor } from '@/content';
+import { EntryRow, LabelledBlock, LocalizedText } from '@/components/content';
+import { AppText, Button, Card, Column, EmptyState, Notice, Screen, SectionTitle } from '@/components/ui';
+import { collection, deitiesById, deityLabel, deityIdsWithEntries, entries, loc, relatedEntries } from '@/content';
 import { useT } from '@/i18n';
 import { useStore } from '@/state/store';
 import { artworkPalette as A, spacing } from '@/theme';
 
 export default function DeityScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t, tOpt, lang } = useT();
+  const { t, lang } = useT();
   const { height } = useWindowDimensions();
   const profile = id ? deitiesById.get(id) : undefined;
   const bannerHeight = Math.round(Math.min(420, Math.max(260, height * 0.4)));
@@ -51,7 +51,6 @@ export default function DeityScreen() {
     { key: 'common_offerings', label: t('deityOfferings'), value: profile.common_offerings },
     { key: 'practical_reflection', label: t('deityReflection'), value: profile.practical_reflection },
   ].filter((s) => s.value);
-  const review = profile.review_status ? tOpt(`reviewStatus_${profile.review_status}`) : undefined;
 
   return (
     <Screen
@@ -100,17 +99,10 @@ export default function DeityScreen() {
       )}
       <Button kind="secondary" icon="school-outline" label={t('learnPuja')} onPress={() => router.navigate('/learn')} style={{ marginTop: spacing.md }} />
 
-      <Divider />
-      <AppText variant="subheading" accessibilityRole="header">
-        {t('sources')}
-      </AppText>
-      <SourceList sources={sourcesFor(profile.source_ids)} />
-      <AppText variant="caption" tone="muted" style={{ marginTop: spacing.sm }}>
-        {artworkCredit(profile.id) ? `${t('artworkCredit')}: ${artworkCredit(profile.id)}` : t('artworkPlaceholder')}
-      </AppText>
-      {review && (
-        <AppText variant="caption" tone="muted" style={{ marginTop: spacing.sm }}>
-          {review}
+      {/* Licensed photographs must carry their credit; the app's own emblems need none. */}
+      {artworkCredit(profile.id) && (
+        <AppText variant="caption" tone="muted" style={{ marginTop: spacing.xl }}>
+          {`${t('artworkCredit')}: ${artworkCredit(profile.id)}`}
         </AppText>
       )}
     </Screen>

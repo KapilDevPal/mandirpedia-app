@@ -3,7 +3,7 @@
     "name": "Mandirpedia",
     "slug": "mandirpedia",
     "scheme": "mandirpedia",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,10 +14,17 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "appStoreUrl": "https://apps.apple.com/app/id6833113190"
     },
     "android": {
       "package": "com.mandirpedia",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.mandirpedia",
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#000000",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -47,7 +54,8 @@
       ],
       "expo-font",
       "expo-status-bar",
-      "expo-asset"
+      "expo-asset",
+      "./plugins/withReleaseSigning"
     ],
     "experiments": {
       "typedRoutes": false

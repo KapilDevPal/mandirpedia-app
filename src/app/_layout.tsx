@@ -79,7 +79,6 @@ function ThemedStack() {
         <Stack.Screen name="deity/[id]" options={{ title: '' }} />
         <Stack.Screen name="deities" options={{ title: t('allDeities') }} />
         <Stack.Screen name="favourites" options={{ title: t('favourites') }} />
-        <Stack.Screen name="sources" options={{ title: t('sourcesTitle') }} />
       </Stack>
     </ThemeProvider>
   );

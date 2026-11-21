@@ -5,6 +5,7 @@ import { Image, Pressable, StyleSheet, useWindowDimensions, View, type Dimension
 import { deityArtwork } from '@/content/deityImages';
 import { emblems } from '@/content/emblems';
 import { Emblem } from './Emblem';
+import { EmblemArt, hasEmblemArt } from './EmblemArt';
 import { deitiesById, deityLabel, loc } from '@/content';
 import { useT } from '@/i18n';
 import { artworkPalette as A, fonts, spacing } from '@/theme';
@@ -15,8 +16,9 @@ const OVERSCAN = 0.25;
 
 /**
  * Full-bleed grayscale deity artwork with a dark scrim. When no licensed photograph is
- * bundled (or it fails to load), shows the deity's original black-and-white emblem
- * (src/content/emblems.ts), or the name in Devanagari for deities without one.
+ * bundled (or it fails to load), shows the deity's original full-colour emblem
+ * (src/content/emblemArt.ts), else the line emblem (src/content/emblems.ts), else the
+ * name in Devanagari.
  */
 export function DeityArt({
   deityId,
@@ -38,6 +40,7 @@ export function DeityArt({
   const art = deityArtwork[deityId];
   const [failed, setFailed] = useState(false);
   const showImage = !!art && !failed;
+  const illustration = art?.kind === 'illustration';
   const hiName = loc(deitiesById.get(deityId)?.name, 'hi') ?? deityLabel(deityId, 'hi');
   const focusY = Math.min(1, Math.max(0, art?.focusY ?? 0.35));
 
@@ -53,19 +56,25 @@ export function DeityArt({
             position: 'absolute',
             left: 0,
             right: 0,
+            width: '100%',
             top: `${-OVERSCAN * 100 * focusY}%`,
             height: `${100 + OVERSCAN * 100}%`,
-            // Artwork should already be grayscale; the filter is a safety net where supported.
-            filter: 'grayscale(1)',
+            // Photos are shown in grayscale to match the monochrome UI; illustrations keep their colour.
+            filter: illustration ? undefined : 'grayscale(1)',
           }}
         />
       ) : (
         <Placeholder deityId={deityId} name={hiName} scale={placeholderScale} position={placeholderPosition} />
       )}
-      {scrim === 'full' && <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />}
+      {/* Photos need darkening for legible captions; the emblem already sits on black, so keep its colour. */}
+      {scrim === 'full' && showImage && !illustration && <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.35)' }]} />}
+      {/* Light illustrations: a soft top fade keeps the white header text legible. */}
+      {scrim === 'full' && showImage && illustration && (
+        <LinearGradient colors={['rgba(0,0,0,0.55)', 'rgba(0,0,0,0)']} locations={[0, 0.18]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      )}
       <LinearGradient
         colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.55)', 'rgba(0,0,0,0.92)']}
-        locations={[0.35, 0.68, 1]}
+        locations={showImage && !illustration ? [0.35, 0.68, 1] : [0.6, 0.8, 1]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
@@ -86,7 +95,11 @@ function Placeholder({ deityId, name, scale, position }: { deityId: string; name
     >
       {/* Thin inner frame on cards, echoing a mounted print. */}
       {!upper && <View style={[StyleSheet.absoluteFill, { margin: 10 * scale, borderWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.22)' }]} />}
-      {shapes ? (
+      {hasEmblemArt(deityId) ? (
+        <View style={{ width: upper ? '46%' : '62%', maxWidth: 280, aspectRatio: 1 }}>
+          <EmblemArt deityId={deityId} />
+        </View>
+      ) : shapes ? (
         <View style={{ width: upper ? '46%' : '62%', maxWidth: 280, aspectRatio: 1 }}>
           <Emblem shapes={shapes} fg="#FFFFFF" bg="#000000" opacity={upper ? 0.75 : 0.9} />
         </View>

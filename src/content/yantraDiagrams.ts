@@ -35,8 +35,8 @@ export const yantraDiagrams: Partial<Record<string, YantraDiagram>> = {
     ],
     magicSum: 72,
     basis: {
-      en: 'The commonly published form of the Kubera yantra: a 3 × 3 square in which every row, column and diagonal adds up to 72. It is not copied from the linked source page, and printed forms vary in their borders and surrounding mantra. Follow your own tradition or teacher for worship and consecration.',
-      hi: 'कुबेर यन्त्र का सामान्य रूप से प्रकाशित स्वरूप: 3 × 3 का वर्ग, जिसकी हर पंक्ति, स्तम्भ और विकर्ण का योग 72 है। यह लिंक किए गए स्रोत पृष्ठ से नहीं लिया गया है, और मुद्रित रूपों में किनारे तथा मन्त्र भिन्न हो सकते हैं। पूजा और प्रतिष्ठा के लिए अपनी परम्परा या गुरु का अनुसरण करें।',
+      en: 'The commonly published form of the Kubera yantra: a 3 × 3 square in which every row, column and diagonal adds up to 72, set inside a bhupura (square enclosure with four gates). Printed forms vary in their borders and surrounding mantra; follow your own tradition or teacher for worship and consecration.',
+      hi: 'कुबेर यन्त्र का सामान्य रूप से प्रकाशित स्वरूप: भूपुर (चार द्वारों वाला वर्ग) के भीतर 3 × 3 का वर्ग, जिसकी हर पंक्ति, स्तम्भ और विकर्ण का योग 72 है। मुद्रित रूपों में किनारे तथा मन्त्र भिन्न हो सकते हैं; पूजा और प्रतिष्ठा के लिए अपनी परम्परा या गुरु का अनुसरण करें।',
     },
   },
 };
